@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CE BOARD EXAM RATING CALCULATOR</title>
+  <style>
+    :root {
+      --bg-dark-grey: #2b2b2b;
+      --card-grey: #3a3a3a;
+      --text-yellow: #ffffff;
+      --highlight-white: #ffffff;
+      --accent-green: #28a745;
+      --accent-red: #ff4d4f;
+      --accent-gray: #cccccc;
+      --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: var(--font-family);
+      background-color: var(--bg-dark-grey);
+      color: var(--text-yellow);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    h2 {
+      font-size: 2rem;
+      margin-bottom: 30px;
+      text-align: center;
+      color: var(--highlight-white);
+    }
+
+    .calculator {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+      width: 100%;
+      max-width: 1000px;
+    }
+
+    .card {
+      background-color: var(--card-grey);
+      border-radius: 12px;
+      padding: 30px;
+    }
+
+    .form-card {
+      flex: 1 1 300px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 20px;
+    }
+
+    label {
+      margin-bottom: 6px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    input[type="number"] {
+      padding: 12px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      text-align: center;
+      background-color: #444;
+      color: var(--text-yellow);
+    }
+
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .reset-btn {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background-color: var(--highlight-white);
+      color: #000;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .reset-btn:hover {
+      background-color: #ff0000;
+    }
+
+    .result-card {
+      flex: 1 1 250px;
+      position: relative;
+    }
+
+    .sticky {
+      position: sticky;
+      top: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      height: 100%;
+    }
+
+    .final-score {
+      font-size: 4.5rem;
+      font-weight: bold;
+      transition: color 0.3s ease;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .green {
+      color: var(--accent-green);
+    }
+
+    .red {
+      color: var(--accent-red);
+    }
+
+    .breakdown {
+      font-size: 1rem;
+      width: 100%;
+    }
+
+    .breakdown div {
+      display: flex;
+      justify-content: space-between;
+      margin: 10px 0;
+    }
+
+    .pass {
+      color: var(--accent-green);
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .fail {
+      color: var(--accent-red);
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 768px) {
+      .final-score {
+        font-size: 3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h2>CE BOARD EXAM RATING CALCULATOR</h2>
+  <div class="calculator">
+    <div class="card form-card">
+      <div class="form-group">
+        <label for="mste">MSTE</label>
+        <input type="number" id="mste" min="0" max="75" />
+      </div>
+      <div class="form-group">
+        <label for="hpge">HPGE</label>
+        <input type="number" id="hpge" min="0" max="50" />
+      </div>
+      <div class="form-group">
+        <label for="psad">PSAD</label>
+        <input type="number" id="psad" min="0" max="75" />
+      </div>
+      <button class="reset-btn" onclick="resetFields()">Reset</button>
+    </div>
+
+    <div class="card result-card">
+      <div class="sticky">
+        <div id="finalScore" class="final-score">--%</div>
+        <div class="breakdown" id="breakdown">
+          <div><span>MSTE: --%</span> <span class="fail">--</span></div>
+          <div><span>HPGE: --%</span> <span class="fail">--</span></div>
+          <div><span>PSAD: --%</span> <span class="fail">--</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const inputs = document.querySelectorAll('input[type="number"]');
+
+    inputs.forEach(input => input.addEventListener('input', calculate));
+
+    function calculate() {
+      const mste = parseFloat(document.getElementById("mste").value);
+      const hpge = parseFloat(document.getElementById("hpge").value);
+      const psad = parseFloat(document.getElementById("psad").value);
+
+      if (
+        isNaN(mste) || isNaN(hpge) || isNaN(psad) ||
+        mste < 0 || mste > 75 ||
+        hpge < 0 || hpge > 50 ||
+        psad < 0 || psad > 75
+      ) {
+        return;
+      }
+
+      const mstePercent = (mste / 75) * 100;
+      const hpgePercent = (hpge / 50) * 100;
+      const psadPercent = (psad / 75) * 100;
+
+      const total = (mstePercent * 0.35) + (hpgePercent * 0.30) + (psadPercent * 0.35);
+
+      const finalScoreEl = document.getElementById("finalScore");
+      finalScoreEl.textContent = `${total.toFixed(2)}%`;
+      finalScoreEl.className = "final-score " + (total >= 70 ? "green" : "red");
+
+      const breakdown = document.getElementById("breakdown");
+      breakdown.innerHTML = `
+        <div><span>MSTE: ${mstePercent.toFixed(2)}%</span> <span class="${mstePercent >= 50 ? 'pass' : 'fail'}">${mstePercent >= 50 ? 'PASS' : 'FAIL'}</span></div>
+        <div><span>HPGE: ${hpgePercent.toFixed(2)}%</span> <span class="${hpgePercent >= 50 ? 'pass' : 'fail'}">${hpgePercent >= 50 ? 'PASS' : 'FAIL'}</span></div>
+        <div><span>PSAD: ${psadPercent.toFixed(2)}%</span> <span class="${psadPercent >= 50 ? 'pass' : 'fail'}">${psadPercent >= 50 ? 'PASS' : 'FAIL'}</span></div>
+      `;
+    }
+
+    function resetFields() {
+      document.getElementById("mste").value = "";
+      document.getElementById("hpge").value = "";
+      document.getElementById("psad").value = "";
+      document.getElementById("finalScore").textContent = "--%";
+      document.getElementById("finalScore").className = "final-score";
+      document.getElementById("breakdown").innerHTML = `
+        <div><span>MSTE: --%</span> <span class="fail">--</span></div>
+        <div><span>HPGE: --%</span> <span class="fail">--</span></div>
+        <div><span>PSAD: --%</span> <span class="fail">--</span></div>
+      `;
+    }
+  </script>
+</body>
+</html>
